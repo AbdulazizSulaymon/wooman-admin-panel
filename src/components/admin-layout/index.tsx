@@ -11,14 +11,12 @@ import { Button, Drawer, Dropdown, Layout, Menu, MenuProps, Typography, theme } 
 import { observer } from 'mobx-react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { AiTwotoneSetting } from 'react-icons/ai';
-import { BsEvStationFill } from 'react-icons/bs';
+import { BiCategoryAlt } from 'react-icons/bi';
 import { CgProfile } from 'react-icons/cg';
 import { HiOutlineLogout } from 'react-icons/hi';
 import { HiHome } from 'react-icons/hi';
 import { ImTruck, ImUserTie } from 'react-icons/im';
-import { MdAccountTree, MdFullscreen, MdFullscreenExit, MdMonitor } from 'react-icons/md';
-import { RiCustomerServiceFill } from 'react-icons/ri';
+import { MdFullscreen, MdFullscreenExit } from 'react-icons/md';
 
 const { Text } = Typography;
 
@@ -50,93 +48,20 @@ const menuItems = [
         key: 'roles',
         label: 'Roles',
       },
-      {
-        key: 'departments',
-        label: 'Departments',
-      },
-      {
-        key: 'positions',
-        label: 'Positions',
-      },
     ],
   },
   {
-    key: 'customer-service',
-    icon: <RiCustomerServiceFill />,
-    label: 'Customer Service',
+    key: 'products',
+    icon: <BiCategoryAlt />,
+    label: 'Mahsulotlar',
     children: [
       {
-        key: 'customers',
-        label: 'Customers',
+        key: 'categories',
+        label: 'Kategoriyalar',
       },
       {
-        key: 'accounts',
-        label: 'Company Accounts',
-      },
-      {
-        key: 'account-cards',
-        label: 'Company Account Cards',
-      },
-      {
-        key: 'bank-accounts',
-        label: 'Bank Accounts',
-      },
-      {
-        key: 'bank-cards',
-        label: 'Bank Cards',
-      },
-    ],
-  },
-  {
-    key: 'accounting',
-    icon: <MdAccountTree />,
-    label: 'Accounting',
-    children: [
-      {
-        key: 'efs-upload-list',
-        label: 'EFS Upload List',
-      },
-      {
-        key: 'discount-management',
-        label: 'Discount Management',
-      },
-      {
-        key: 'invoicing',
-        label: 'Invoicing',
-      },
-      {
-        key: 'payment-list',
-        label: 'Payment List',
-      },
-    ],
-  },
-  {
-    key: 'station-management',
-    icon: <BsEvStationFill />,
-    label: 'Station Management',
-    children: [
-      {
-        key: 'station-chains',
-        label: 'Station Chains',
-      },
-      {
-        key: 'stations',
-        label: 'Stations',
-      },
-    ],
-  },
-  {
-    key: 'settings',
-    icon: <AiTwotoneSetting />,
-    label: 'Settings',
-    children: [
-      {
-        key: 'organizations',
-        label: 'Organizations',
-      },
-      {
-        key: 'efs-accounts',
-        label: 'EFS Accounts',
+        key: 'products',
+        label: 'Mahsulotlar',
       },
     ],
   },
@@ -151,9 +76,10 @@ const AdminLayout = observer(({ children }: { children: React.ReactNode }) => {
   const title = router.route.slice(router.route.lastIndexOf('/') + 1);
   const subKey = router.route.slice(router.route.indexOf('/') + 1, router.route.lastIndexOf('/'));
   const api = useApi();
-  const userData = useUserMe();
+  // const userData = useUserMe();
 
   useEffect(() => {
+    console.log(api.checkToken());
     if (!api.checkToken()) router.push('/login');
   }, []);
 
@@ -259,10 +185,14 @@ const AdminLayout = observer(({ children }: { children: React.ReactNode }) => {
       <Layout className="site-layout flex flex-column h-[100vh]">
         <Header className={'drop-shadow-xl bg-white flex items-center justify-between px-8'}>
           <div className={'flex items-center justify-center'}>
-            {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-              className: 'trigger',
-              onClick: () => setCollapsed(!collapsed),
-            })}
+            {React.createElement(
+              collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+              // @ts-ignore
+              {
+                className: 'trigger',
+                onClick: () => setCollapsed(!collapsed),
+              },
+            )}
             <Text className={'font-bold text-xl capitalize ml-3'}>{title}</Text>
           </div>
           <div className={'flex items-center justify-center'}>

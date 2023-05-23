@@ -1,4 +1,4 @@
-import { LoadingOutlined } from '@ant-design/icons';
+import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 import AdminLayout from '@components/admin-layout';
 import { AutoForm } from '@components/form/auto-form';
 import { numericColumn } from '@components/table/components';
@@ -126,7 +126,7 @@ const ItemModal = observer(() => {
       onCancel={onCancel}
       footer={[]}
     >
-      {isLoadingOne && <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />}
+      {isLoadingOne && <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin rev={undefined} />} />}
       <AutoForm
         form={form}
         fields={fields}

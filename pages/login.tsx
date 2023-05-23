@@ -41,8 +41,8 @@ export default function Page() {
             className={'w-full'}
           >
             <Form.Item
-              label="Login"
-              name="login"
+              label="Phone"
+              name="phone"
               rules={[{ required: true, message: 'Please enter your login!' }]}
               className={'mb-5'}
             >

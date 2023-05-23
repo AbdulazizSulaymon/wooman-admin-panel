@@ -21,7 +21,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const baseBackendUrl = 'http://95.130.227.7:3002/';
-export const projectName = 'CitiFuel';
+// export const baseBackendUrl = 'http://localhost:3002/';
+export const projectName = 'Wooman.uz';
 
 const cache = createCache({ key: 'next' });
 //Binding events.

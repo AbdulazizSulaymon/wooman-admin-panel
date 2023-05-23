@@ -65,7 +65,7 @@ export class Api {
 
   async login(data: Record<string, unknown>) {
     const res = await this.instance.post(this.loginUrl, data);
-    this.signInSuccess(res.data.accessToken, 'user');
+    this.signInSuccess(res.data.access_token, 'user');
     return res;
   }
 
