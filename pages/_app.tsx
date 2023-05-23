@@ -5,6 +5,8 @@ import { ReactQueryProvider } from '@hocs/react-query';
 import { useHideLogs } from '@hocs/use-hide-logs';
 import { useWatchRouter } from '@hooks/use-watch-router';
 import { Api, ApiProvider } from '@src/api';
+import { apiCoreFunctions } from '@src/api/const';
+import { models } from '@src/api/models';
 import { StoreProvider, useStore } from '@src/stores/stores';
 import '@styles/globals.css';
 import '@styles/tailwind.css';
@@ -41,6 +43,7 @@ const LoadingScreen = () => {
 export default (function App({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [api, setApi]: [Api | undefined, Function] = useState(undefined);
+  const router = useRouter();
 
   useHideLogs();
   useWatchRouter();
@@ -50,9 +53,9 @@ export default (function App({ Component, pageProps }: AppProps) {
   }, []);
 
   useEffect(() => {
-    const instance = new Api(baseBackendUrl, {
+    const instance = new Api(router, models, apiCoreFunctions, baseBackendUrl, {
       showApis: false,
-      tokenName: 'Wooman Token',
+      token: 'Woomanuz Token',
       loginUrl: 'api/auth/login',
     });
     setApi(instance);

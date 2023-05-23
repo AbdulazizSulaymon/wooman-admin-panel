@@ -1,5 +1,5 @@
+import { ApiFunctions } from '@src/api/types';
 import { useRouterStore } from '@src/stores/router-store';
-import { ApiFunctions } from '@src/utils/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 
@@ -9,7 +9,7 @@ export const useCrudModal = ({ name, model, getOne }: { name: string; model: Api
 
   const { mutate: post, isLoading: isLoadingPost } = useMutation(
     [`post-${name}`],
-    (data: Record<string, any>) => model.post(data),
+    (data: Record<string, any>) => model.createOne(data),
     {
       onSuccess: () => {
         toast.success('Added successfully!');
@@ -24,8 +24,8 @@ export const useCrudModal = ({ name, model, getOne }: { name: string; model: Api
 
   const { mutate: update, isLoading: isLoadingUpdate } = useMutation(
     [`put-${name}`],
-    (values?: Record<string, unknown>, id?: string | number) => {
-      return model.put(values, values?.id as number);
+    (data: Record<string, unknown>) => {
+      return model.updateOne(data);
     },
     {
       onSuccess: () => {
@@ -41,7 +41,7 @@ export const useCrudModal = ({ name, model, getOne }: { name: string; model: Api
     data: dataById,
     isLoading: isLoadingOne,
     isError,
-  } = useQuery([name, query.id], getOne ? getOne : () => model.getOne(undefined, query.id), {
+  } = useQuery([name, query.id], getOne ? getOne : (data: Record<string, any>) => model.findOne(data), {
     enabled: !!query.id,
   });
 
