@@ -1,0 +1,9 @@
+body {
+  background-color: white !important;
+}
+
+@media (min-width: 768px) {
+  .layout-drawer {
+    display: none !important;
+  }
+}
