@@ -89,6 +89,7 @@ const RoleModal = observer(() => {
   const { isLoadingPost, isLoadingUpdate, isLoadingOne, post, update, dataById } = useCrudModal({
     name: 'roles',
     model: api.apis.Role,
+    getOne: () => api.apis.Role.findOne({ where: { id: query.id }, include: { permission: true } }),
   });
 
   const onCancel = () => {
@@ -100,26 +101,44 @@ const RoleModal = observer(() => {
 
   const onFinish = (values: any) => {
     console.log(values);
+    console.log(dataById);
+
+    const permissions = Object.values(checkeds)
+      .filter((value) => !!value?.id)
+      .map((value) => ({ id: value?.id }));
+
+    console.log(permissions);
+
     const data = {
       ...values,
       permission: {
-        connect: Object.values(checkeds)
-          .filter((value) => !!value)
-          .map((value) => ({ id: value?.id })),
+        connect: permissions,
+      },
+    };
+
+    const data2 = {
+      ...values,
+      permission: {
+        connect: permissions.filter(
+          (item) => !dataById?.data.permission.find((p: Record<string, any>) => p.id === item.id),
+        ),
+        disconnect: dataById?.data.permission
+          .filter((item: Record<string, any>) => !permissions.find((p) => p.id === item.id))
+          .map((item: Record<string, any>) => ({ id: item.id })),
       },
     };
 
     if (query.add) post({ data });
     else if (query.edit) {
-      update({ data: { ...data, id: dataById?.data.id } }, dataById?.data.id);
+      update({ data: data2, where: { id: dataById?.data.id } });
     }
   };
 
   useEffect(() => {
     if (query.edit && dataById?.data) {
       form.setFieldsValue(dataById?.data);
-      const pers = dataById?.data.permissions.reduce(
-        (obj: Record<string, string>, value: Record<string, string>) => ({ ...obj, [value.id]: value.name }),
+      const pers = dataById?.data?.permission.reduce(
+        (obj: Record<string, string>, value: Record<string, string>) => ({ ...obj, [value.id]: { id: value.id } }),
         {},
       );
       setCheckeds(pers);
@@ -150,8 +169,6 @@ const RoleModal = observer(() => {
     ],
     [checkeds],
   );
-
-  console.log(checkeds);
 
   return (
     <Modal

@@ -41,7 +41,7 @@ export const useCrudModal = ({ name, model, getOne }: { name: string; model: Api
     data: dataById,
     isLoading: isLoadingOne,
     isError,
-  } = useQuery([name, query.id], getOne ? getOne : (data: Record<string, any>) => model.findOne(data), {
+  } = useQuery([name, query.id], getOne ? getOne : () => model.findOne({ where: { id: query.id } }), {
     enabled: !!query.id,
   });
 
