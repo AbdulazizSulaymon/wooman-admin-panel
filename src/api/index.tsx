@@ -82,7 +82,7 @@ export class Api {
 
   logOut() {
     this.writeToken();
-    this.router?.push('/admin/login');
+    this.router?.push('/login');
     this.createApi();
   }
 
@@ -99,7 +99,7 @@ export class Api {
 
   signInSuccess(token: string, user: any) {
     this.writeToken(token, user);
-    this.router?.push('/admin/orders');
+    this.router?.push('/home');
     this.createApi();
   }
 

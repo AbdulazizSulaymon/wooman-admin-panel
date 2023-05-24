@@ -36,12 +36,6 @@ export default observer(function Home() {
         key: 'name',
         type: 'string',
       },
-      {
-        title: `Description`,
-        dataIndex: 'description',
-        key: 'description',
-        type: 'string',
-      },
     ],
     [],
   );
@@ -51,7 +45,7 @@ export default observer(function Home() {
 
   const { mutate: remove, isLoading: isLoadingRemove } = useMutation(
     ['delete-role'],
-    (data: Record<string, any>) => api.apis.Roles.delete(undefined, data.id),
+    (data: Record<string, any>) => api.apis.Role.deleteOne({ where: data.id }),
     {
       onSuccess: () => {
         toast.success('Deleted successfully!');
@@ -64,7 +58,7 @@ export default observer(function Home() {
   return (
     <AdminLayout>
       <Table
-        dataSource={data?.data}
+        dataSource={data?.data?.data}
         columns={columns}
         // getData={getData}
         // update={updateAsync}
@@ -91,10 +85,10 @@ const RoleModal = observer(() => {
   const [form] = Form.useForm();
   const api = useApi();
   const queryClient = useQueryClient();
-  const [checkeds, setCheckeds] = useState<Record<string, object>>({});
+  const [checkeds, setCheckeds] = useState<Record<string, Record<string, any>>>({});
   const { isLoadingPost, isLoadingUpdate, isLoadingOne, post, update, dataById } = useCrudModal({
     name: 'roles',
-    model: api.apis.Roles,
+    model: api.apis.Role,
   });
 
   const onCancel = () => {
@@ -105,11 +99,19 @@ const RoleModal = observer(() => {
   };
 
   const onFinish = (values: any) => {
-    const data = { ...values, permissions: Object.values(checkeds).filter((value) => !!value) };
+    console.log(values);
+    const data = {
+      ...values,
+      permission: {
+        connect: Object.values(checkeds)
+          .filter((value) => !!value)
+          .map((value) => ({ id: value?.id })),
+      },
+    };
 
-    if (query.add) post(data);
+    if (query.add) post({ data });
     else if (query.edit) {
-      update({ ...data, id: dataById?.data.id }, dataById?.data.id);
+      update({ data: { ...data, id: dataById?.data.id } }, dataById?.data.id);
     }
   };
 
@@ -124,17 +126,11 @@ const RoleModal = observer(() => {
     } else setCheckeds({});
   }, [dataById?.data]);
 
-  const { data, isLoading, isError } = useQuery(['permissions'], () => api.apis.Permissions.get(), {});
+  const { data, isLoading, isError } = useQuery(['permissions'], () => api.apis.Permission.findMany(), {});
 
   const columns: (ColumnGroupType<object> | ColumnType<object>)[] = useMemo(
     () => [
       numericColumn(),
-      {
-        title: `Description`,
-        dataIndex: 'description',
-        key: 'description',
-        type: 'string',
-      },
       {
         title: `Name`,
         dataIndex: 'name',
@@ -182,17 +178,9 @@ const RoleModal = observer(() => {
         >
           <Input />
         </Form.Item>
-        <Form.Item
-          label="Description"
-          name="description"
-          rules={[{ required: true, message: 'Please input description!' }]}
-          className={'my-4'}
-        >
-          <Input />
-        </Form.Item>
 
         <AntTableStyled
-          dataSource={data?.data}
+          dataSource={data?.data?.data}
           columns={columns}
           size={'small'}
           loading={false}
@@ -206,7 +194,7 @@ const RoleModal = observer(() => {
             return {
               onClick: (event) => {
                 // @ts-ignore
-                setCheckeds({ ...checkeds, [row?.id]: !checkeds[row?.id] ? row?.name : undefined });
+                setCheckeds({ ...checkeds, [row?.id]: !checkeds[row?.id] ? row : undefined });
               },
             };
           }}
