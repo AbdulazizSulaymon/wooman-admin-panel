@@ -69,13 +69,22 @@ export const AutoForm = ({
                         />
                       </Form.Item>
                       {fields.length > 1 ? (
-                        <MinusCircleOutlined className="dynamic-delete-button" onClick={() => remove(listField.name)} />
+                        <MinusCircleOutlined
+                          rev={undefined}
+                          className="dynamic-delete-button"
+                          onClick={() => remove(listField.name)}
+                        />
                       ) : null}
                     </Form.Item>
                   ))}
 
                   <Form.Item>
-                    <Button type="dashed" onClick={() => add()} style={{ width: '60%' }} icon={<PlusOutlined />}>
+                    <Button
+                      type="dashed"
+                      onClick={() => add()}
+                      style={{ width: '60%' }}
+                      icon={<PlusOutlined rev={undefined} />}
+                    >
                       Add field
                     </Button>
 

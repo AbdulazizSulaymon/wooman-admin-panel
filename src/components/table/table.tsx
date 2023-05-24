@@ -216,7 +216,7 @@ function Table({
             <FaSave />
           </Button>
           <Popconfirm
-            icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+            icon={<QuestionCircleOutlined rev={undefined} style={{ color: 'red' }} />}
             title="Do you want to cancel?"
             onConfirm={cancel}
             okText="Yes"
@@ -238,7 +238,7 @@ function Table({
               <TbEdit />
             </Button>
             <Popconfirm
-              icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+              icon={<QuestionCircleOutlined rev={undefined} style={{ color: 'red' }} />}
               title="Are you sure to delete?"
               onConfirm={removeCallback ? () => removeCallback(record) : () => removeRow(record)}
               okText="Yes"

@@ -8,7 +8,7 @@ import { join } from '@fireflysemantics/join';
 import { useCrudModal } from '@hooks/use-crud-modal';
 import { useRouterPush } from '@hooks/use-router-push';
 import { useApi } from '@src/api';
-import { useDepartments, usePositions, useRoles } from '@src/queries';
+import { useRoles } from '@src/queries';
 import { useRouterStore } from '@src/stores/router-store';
 import { useStore } from '@src/stores/stores';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -82,14 +82,14 @@ export default observer(function Home() {
     [],
   );
 
-  const { data, isLoading, isError } = useQuery(['users'], () => api.apis.Users.get(), {});
+  const { data, isLoading, isError } = useQuery(['users'], () => api.apis.User.findMany(), {});
 
   const addCallback = useCallback(() => push({ add: true }), []);
   const editCallback = useCallback((data: Record<string, any>) => push({ edit: true, id: data.id }), []);
 
   const { mutate: remove, isLoading: isLoadingRemove } = useMutation(
     ['delete-user'],
-    (data: Record<string, any>) => api.apis.Users.delete(undefined, data.id),
+    (data: Record<string, any>) => api.apis.User.deleteOne({ id: data.id }),
     {
       onSuccess: () => {
         toast.success('Deleted successfully!');
@@ -132,7 +132,7 @@ const UserModal = observer(() => {
 
   const { isLoadingPost, isLoadingUpdate, isLoadingOne, post, update, dataById } = useCrudModal({
     name: 'users',
-    model: api.apis.Users,
+    model: api.apis.User,
     getOne: () => api.instance.get(join('Roles/users/', query.id)),
   });
 
@@ -148,9 +148,7 @@ const UserModal = observer(() => {
     }
   };
 
-  const { data: positions, isLoading: isLoadingPositions } = usePositions();
   const { data: roles, isLoading: isLoadingRoles } = useRoles();
-  const { data: departments, isLoading: isLoadingDepartments } = useDepartments();
 
   useEffect(() => {
     if (query.edit && dataById?.data) form.setFieldsValue(dataById?.data);
@@ -176,23 +174,13 @@ const UserModal = observer(() => {
         options: roles?.data.map((item: Record<string, any>) => ({ label: item.name, value: item.id })),
         mode: 'multiple' as SelectMode,
       },
-      {
-        label: 'Department',
-        name: 'departmentId',
-        options: departments?.data.map((item: Record<string, any>) => ({ label: item.name, value: item.id })),
-      },
-      {
-        label: 'Position',
-        name: 'positionId',
-        options: positions?.data.map((item: Record<string, any>) => ({ label: item.name, value: item.id })),
-      },
     ],
-    [roles?.data, positions?.data, departments?.data],
+    [roles?.data],
   );
 
   return (
     <Modal title={`${query.add ? 'Add' : 'Edit'} user`} open={query.add || query.edit} onCancel={onCancel} footer={[]}>
-      {(isLoadingOne || isLoadingPositions || isLoadingRoles || isLoadingDepartments) && <SpinLoading />}
+      {(isLoadingOne || isLoadingRoles) && <SpinLoading />}
       <AutoForm
         form={form}
         fields={fields}
