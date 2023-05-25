@@ -100,37 +100,34 @@ const RoleModal = observer(() => {
   };
 
   const onFinish = (values: any) => {
-    console.log(values);
-    console.log(dataById);
-
     const permissions = Object.values(checkeds)
       .filter((value) => !!value?.id)
       .map((value) => ({ id: value?.id }));
 
-    console.log(permissions);
-
-    const data = {
-      ...values,
-      permission: {
-        connect: permissions,
-      },
-    };
-
-    const data2 = {
-      ...values,
-      permission: {
-        connect: permissions.filter(
-          (item) => !dataById?.data.permission.find((p: Record<string, any>) => p.id === item.id),
-        ),
-        disconnect: dataById?.data.permission
-          .filter((item: Record<string, any>) => !permissions.find((p) => p.id === item.id))
-          .map((item: Record<string, any>) => ({ id: item.id })),
-      },
-    };
-
-    if (query.add) post({ data });
+    if (query.add)
+      post({
+        data: {
+          ...values,
+          permission: {
+            connect: permissions,
+          },
+        },
+      });
     else if (query.edit) {
-      update({ data: data2, where: { id: dataById?.data.id } });
+      update({
+        data: {
+          ...values,
+          permission: {
+            connect: permissions.filter(
+              (item) => !dataById?.data.permission.find((p: Record<string, any>) => p.id === item.id),
+            ),
+            disconnect: dataById?.data.permission
+              .filter((item: Record<string, any>) => !permissions.find((p) => p.id === item.id))
+              .map((item: Record<string, any>) => ({ id: item.id })),
+          },
+        },
+        where: { id: dataById?.data.id },
+      });
     }
   };
 
